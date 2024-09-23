@@ -9,13 +9,17 @@ import style from './style.module.scss';
 
 export default function Login() {
     const [loading, setLoading] = React.useState(false);
-    const [, setToken] = useLocalStorage(process.env.REACT_APP_TOKEN_KEY, null, 1000 * 10);
+    const [, setToken] = useLocalStorage(
+        process.env.REACT_APP_TOKEN_KEY,
+        null,
+        process.env.REACT_APP_TOKEN_EXPIRES * 1000
+    );
     const [, setUser] = useLocalStorage('user');
     const navigate = useNavigate();
 
     const onFinish = values => {
         setLoading(true);
-        request.post('system/user/login', values).then(({ success, data }) => {
+        request.post('system/user/login', values, { verifyToken: false }).then(({ success, data }) => {
             if (success) {
                 setToken(data.Token);
                 setUser({ UserId: data.UserId, UserName: data.UserName });
@@ -30,7 +34,12 @@ export default function Login() {
         <div className={style['login-container']}>
             <div className={style['login-box']}>
                 <h2>登录</h2>
-                <Form name="login" onFinish={onFinish}>
+                <Form
+                    name="login"
+                    initialValues={{ UserAccount: 'admin', PassWord: '123456' }}
+                    onFinish={onFinish}
+                    autoComplete="off"
+                >
                     <Form.Item name="UserAccount" rules={[{ required: true, message: '请输入用户账号!' }]}>
                         <Input prefix={<UserOutlined />} placeholder="用户名" />
                     </Form.Item>

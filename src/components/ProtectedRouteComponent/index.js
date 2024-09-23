@@ -20,7 +20,7 @@ const ProtectedRoute = ({ children }) => {
         return <Navigate to="/login" />;
     }
 
-    return children;
+    return <>{children}</>;
 };
 
 export default ProtectedRoute;
