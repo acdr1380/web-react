@@ -1,11 +1,16 @@
 import React, { useEffect } from 'react';
-import { Layout } from 'antd';
-import request from '@/utils/request';
-import { useUserInfo } from '@/hooks';
+import { Layout, theme } from 'antd';
+import { Provider } from 'jotai';
 
-const { Sider, Content, Header } = Layout;
+import { useUserInfo } from '@/hooks';
+import request from '@/utils/request';
+import Header from './header';
+import Sider from './sider';
+
+const { Content } = Layout;
 function Index() {
     const userInfo = useUserInfo();
+    const { token: themToken } = theme.useToken();
 
     useEffect(() => {
         request.get('system/user').then(({ success, data }) => {
@@ -16,13 +21,15 @@ function Index() {
     }, []);
 
     return (
-        <Layout>
-            <Header>Header</Header>
+        <Provider>
             <Layout>
-                <Sider>Sider</Sider>
-                <Content>{JSON.stringify(userInfo)}</Content>
+                <Sider themToken={themToken} />
+                <Layout>
+                    <Header themToken={themToken} />
+                    <Content style={{ margin: 12, padding: 12 }}>{JSON.stringify(userInfo)}</Content>
+                </Layout>
             </Layout>
-        </Layout>
+        </Provider>
     );
 }
 export default Index;

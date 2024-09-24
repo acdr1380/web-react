@@ -1,7 +1,12 @@
-import { useLocalStorage } from '@/hooks';
+import { userInfoAtom } from '@/storage/globalStorage';
+import { useAtomValue } from 'jotai';
 
+/**
+ * 获取用户信息
+ * @returns userInfo 用户信息
+ */
 function useUserInfo() {
-    const [userInfo] = useLocalStorage('user');
+    const userInfo = useAtomValue(userInfoAtom);
 
     return userInfo;
 }

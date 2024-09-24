@@ -3,7 +3,7 @@ import { message } from 'antd';
 
 const baseUrl = process.env.REACT_APP_BASE_URL || '/api';
 
-const Request = async (endpoint, options = {}, config = {}) => {
+const request = async (endpoint, options = {}, config = {}) => {
     const _config = {
         showError: true,
         verifyToken: true,
@@ -38,11 +38,12 @@ const Request = async (endpoint, options = {}, config = {}) => {
             }
 
             // 更新过期时间
-            const newExpireTime = now + process.env.REACT_APP_EXPIRE_TIME * 1000;
+            const newExpireTime = now + process.env.REACT_APP_TOKEN_EXPIRES * 1000;
             const updatedData = {
                 value: parsedData.value,
                 expireTime: newExpireTime,
             };
+
             localStorage.setItem(process.env.REACT_APP_TOKEN_KEY, JSON.stringify(updatedData));
 
             // 添加验证
@@ -85,14 +86,14 @@ const get = async (endpoint, params = {}, config = {}) => {
     }
 
     // 发起GET请求
-    const data = await Request(endpoint, { method: 'GET' }, config);
+    const data = await request(endpoint, { method: 'GET' }, config);
 
     return data;
 };
 
 const post = async (endpoint, params = {}, config = {}) => {
     // 执行POST请求，使用baseUrl和endpoint构建完整URL
-    const data = await Request(endpoint, { method: 'POST', body: JSON.stringify(params) }, config);
+    const data = await request(endpoint, { method: 'POST', body: JSON.stringify(params) }, config);
     return data;
 };
 
@@ -109,7 +110,7 @@ const uploadFile = async (endpoint, file, additionalData = {}) => {
     });
 
     // 发送带有FormData的POST请求到指定的服务器端点
-    const data = await Request(endpoint, {
+    const data = await request(endpoint, {
         method: 'POST',
         body: formData,
         headers: { 'Content-Type': 'multipart/form-data' },

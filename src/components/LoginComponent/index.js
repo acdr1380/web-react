@@ -2,10 +2,12 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Form, Input, Button, Flex } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
+import { useSetAtom } from 'jotai';
 import { useLocalStorage } from '@/hooks';
 import request from '@/utils/request';
-
 import style from './style.module.scss';
+
+import { userInfoAtom } from '@/storage/globalStorage';
 
 export default function Login() {
     const [loading, setLoading] = React.useState(false);
@@ -14,7 +16,7 @@ export default function Login() {
         null,
         process.env.REACT_APP_TOKEN_EXPIRES * 1000
     );
-    const [, setUser] = useLocalStorage('user');
+    const setUserInfo = useSetAtom(userInfoAtom);
     const navigate = useNavigate();
 
     const onFinish = values => {
@@ -22,7 +24,7 @@ export default function Login() {
         request.post('system/user/login', values, { verifyToken: false }).then(({ success, data }) => {
             if (success) {
                 setToken(data.Token);
-                setUser({ UserId: data.UserId, UserName: data.UserName });
+                setUserInfo({ UserId: data.UserId, UserName: data.UserName });
                 navigate('/app');
             }
 
