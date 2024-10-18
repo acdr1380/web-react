@@ -1,6 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, Suspense } from 'react';
 import { Layout, theme } from 'antd';
 import { Provider } from 'jotai';
+import { Outlet } from 'react-router-dom';
 
 import { useUserInfo } from '@/hooks';
 import request from '@/utils/request';
@@ -26,7 +27,11 @@ function Index() {
                 <Sider themToken={themToken} />
                 <Layout>
                     <Header themToken={themToken} />
-                    <Content style={{ margin: 12, padding: 12 }}>{JSON.stringify(userInfo)}</Content>
+                    <Content style={{ margin: 12, padding: 12 }}>
+                        <Suspense fallback={<div>Loading...</div>}>
+                            <Outlet />
+                        </Suspense>
+                    </Content>
                 </Layout>
             </Layout>
         </Provider>

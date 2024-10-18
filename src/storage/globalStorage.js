@@ -5,5 +5,7 @@ import { atomWithStorage } from 'jotai/utils';
 const isLoginAtom = atom(false);
 // 用户信息
 const userInfoAtom = atomWithStorage('user', {});
+// 菜单数据
+const menuListAtom = atom('menuList', []);
 
-export { isLoginAtom, userInfoAtom };
+export { isLoginAtom, userInfoAtom, menuListAtom };
