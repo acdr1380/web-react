@@ -1,4 +1,3 @@
-import { lazy } from 'react';
 import { Navigate } from 'react-router-dom';
 import { ProtectedRouteComponent, LoginComponent } from '@/components';
 import Layout from '@/layout/index';
@@ -12,6 +11,7 @@ const router = [
                 <Layout />
             </ProtectedRouteComponent>
         ),
+        children: [],
     },
     { path: '/login', element: <LoginComponent /> },
     { path: '*', element: <Navigate to="/login" /> },

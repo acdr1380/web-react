@@ -6,6 +6,6 @@ const isLoginAtom = atom(false);
 // 用户信息
 const userInfoAtom = atomWithStorage('user', {});
 // 菜单数据
-const menuListAtom = atom('menuList', []);
+const menuListAtom = atom([]);
 
 export { isLoginAtom, userInfoAtom, menuListAtom };

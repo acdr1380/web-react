@@ -1,6 +1,12 @@
 import { atom } from 'jotai';
 
 // 侧边栏是否折叠
-export const collapsedAtom = atom(false);
+const collapsedAtom = atom(false);
+const menuListAtom = atom([]);
 
-export const countAtom = atom(0);
+const storageAtoms = {
+    collapsedAtom,
+    menuListAtom,
+};
+
+export default storageAtoms;

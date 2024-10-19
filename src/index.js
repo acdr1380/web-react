@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { ConfigProvider } from 'antd';
 import { Provider } from 'jotai';
+import { BrowserRouter } from 'react-router-dom';
 
 import Routers from '@/routers';
 import '@/assets/globalStyle.scss';
@@ -16,7 +17,9 @@ const theme = { token: { colorPrimary: '#00b96b' } };
 root.render(
     <Provider>
         <ConfigProvider theme={theme}>
-            <Routers />
+            <BrowserRouter>
+                <Routers />
+            </BrowserRouter>
         </ConfigProvider>
     </Provider>
 );

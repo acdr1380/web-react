@@ -3,15 +3,15 @@ import { Layout, Menu } from 'antd';
 import { useAtomValue } from 'jotai';
 import { UserOutlined, VideoCameraOutlined, UploadOutlined } from '@ant-design/icons';
 
-import { collapsedAtom, countAtom } from '../storage';
+import storage from '../storage';
 
 export default function Sider() {
-    const collapsed = useAtomValue(collapsedAtom);
+    const collapsed = useAtomValue(storage.collapsedAtom);
 
-    const count = useAtomValue(countAtom);
+    const menuList = useAtomValue(storage.menuListAtom);
 
     const items = React.useMemo(() => {
-        return new Array(count).fill(null).map((_, i) => {
+        return menuList.map((_, i) => {
             const icon = i === 1 ? <UserOutlined /> : i % 2 === 0 ? <VideoCameraOutlined /> : <UploadOutlined />;
             return {
                 key: i,
@@ -19,7 +19,7 @@ export default function Sider() {
                 label: `nav ${i}`,
             };
         });
-    }, [count]);
+    }, [menuList]);
 
     return (
         <Layout.Sider trigger={null} collapsible collapsed={collapsed}>

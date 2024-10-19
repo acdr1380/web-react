@@ -1,14 +1,13 @@
 import React from 'react';
 import { Layout, Button } from 'antd';
-import { useAtom, useSetAtom } from 'jotai';
+import { useAtom } from 'jotai';
 import { MenuUnfoldOutlined, MenuFoldOutlined } from '@ant-design/icons';
 
-import { collapsedAtom, countAtom } from '../storage';
+import storage from '../storage';
 
 export default function Header(props) {
     const { themToken = {} } = props;
-    const [collapsed, setCollapsed] = useAtom(collapsedAtom);
-    const setCount = useSetAtom(countAtom);
+    const [collapsed, setCollapsed] = useAtom(storage.collapsedAtom);
 
     return (
         <Layout.Header style={{ padding: 0, background: themToken.colorBgContainer }}>
@@ -22,7 +21,6 @@ export default function Header(props) {
                     height: 64,
                 }}
             />
-            <Button children="点击加1" onClick={() => setCount(count => count + 1)} />
         </Layout.Header>
     );
 }
