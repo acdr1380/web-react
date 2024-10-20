@@ -1,24 +1,21 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Layout, Menu } from 'antd';
 import { useAtomValue } from 'jotai';
-import { UserOutlined, VideoCameraOutlined, UploadOutlined } from '@ant-design/icons';
+import tools from '@/utils/tools';
 
 import storage from '../storage';
+
+const key = 'Id';
+const parentKey = 'ParentId';
 
 export default function Sider() {
     const collapsed = useAtomValue(storage.collapsedAtom);
 
+    // 菜单列表
     const menuList = useAtomValue(storage.menuListAtom);
 
-    const items = React.useMemo(() => {
-        return menuList.map((_, i) => {
-            const icon = i === 1 ? <UserOutlined /> : i % 2 === 0 ? <VideoCameraOutlined /> : <UploadOutlined />;
-            return {
-                key: i,
-                icon: icon,
-                label: `nav ${i}`,
-            };
-        });
+    const items = useMemo(() => {
+        return tools.buildTree(menuList, key, parentKey);
     }, [menuList]);
 
     return (
