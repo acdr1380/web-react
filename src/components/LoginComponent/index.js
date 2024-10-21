@@ -2,12 +2,10 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Form, Input, Button, Flex } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
-import { useSetAtom } from 'jotai';
-import { useLocalStorage } from '@/hooks';
+import { useLocalStorage, useUserInfo } from '@/hooks';
+
 import request from '@/utils/request';
 import style from './style.module.scss';
-
-import { userInfoAtom } from '@/storage/globalStorage';
 
 export default function Login() {
     const [loading, setLoading] = React.useState(false);
@@ -16,7 +14,7 @@ export default function Login() {
         null,
         process.env.REACT_APP_TOKEN_EXPIRES * 1000
     );
-    const setUserInfo = useSetAtom(userInfoAtom);
+    const [, setUserInfo] = useUserInfo();
     const navigate = useNavigate();
 
     const onFinish = values => {

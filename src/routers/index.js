@@ -1,8 +1,6 @@
 import React, { useMemo } from 'react';
 import { useRoutes, Navigate } from 'react-router-dom';
-import { useAtomValue } from 'jotai';
 
-import storageAtoms from '@/layout/storage';
 import baseRouter from './baseRouters';
 
 // 批量导入页面
@@ -13,7 +11,7 @@ const modules = require.context('@/views', true, /\.js$/);
  * @returns 路由
  */
 function GetRoutes() {
-    const menuList = useAtomValue(storageAtoms.menuListAtom);
+    const menuList = [];
 
     const _baseRouter = useMemo(() => {
         menuList.forEach(item => {

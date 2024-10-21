@@ -1,36 +1,33 @@
 import React, { useEffect } from 'react';
-import { Layout, theme } from 'antd';
-import { Provider, useSetAtom } from 'jotai';
+import { Provider } from 'react-redux';
 import { Outlet } from 'react-router-dom';
+import { Layout, theme } from 'antd';
 
 import { useUserInfo } from '@/hooks';
 import request from '@/utils/request';
 import Header from './header';
 import Sider from './sider';
 
-import storage from './storage';
+import store from './store';
 
 const { Content } = Layout;
 
 function Index() {
-    const userInfo = useUserInfo();
+    const [userInfo] = useUserInfo();
 
     const { token: themToken } = theme.useToken();
-
-    const setMenuList = useSetAtom(storage.menuListAtom);
 
     useEffect(() => {
         request.get('system/menu').then(({ success, data }) => {
             if (success) {
                 // setMenuList([{ title: '首页', path: '', url: '@/views/systemManagement/userManagement/index.js' }]);
-
-                setMenuList(data.map(item => ({ ...item, label: item.Title, key: item.Id, url: item.Url })));
+                // setMenuList(data.map(item => ({ ...item, label: item.Title, key: item.Id, url: item.Url })));
             }
         });
     }, []);
 
     return (
-        <Provider>
+        <Provider store={store}>
             <Layout>
                 <Sider themToken={themToken} />
                 <Layout>
