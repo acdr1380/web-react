@@ -1,0 +1,6 @@
+.loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* 使容器高度占满整个视口 */
+}

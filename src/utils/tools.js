@@ -25,12 +25,15 @@ function buildTree(data, key = 'Id', parentKey = 'ParentId') {
         }
     });
 
-    // 删除没有子节点的 children 属性
+    /**
+     * 删除没有子节点的 children 属性
+     * @param {Array} nodes - 需要处理的节点数组
+     */
     function removeEmptyChildren(nodes) {
         nodes.forEach(node => {
-            if (node.children.length === 0) {
+            if (node.children && node.children.length === 0) {
                 delete node.children; // 删除 children 属性
-            } else {
+            } else if (node.children) {
                 removeEmptyChildren(node.children); // 递归处理子节点
             }
         });
@@ -64,5 +67,30 @@ function flattenTree(tree) {
     return flatArray;
 }
 
-const tools = { buildTree, flattenTree };
+/**
+ * 判断值是否为空
+ * @param {*} value - 需要判断的值
+ * @returns {boolean} - 如果值为空，返回 true；否则返回 false
+ */
+function isEmpty(value) {
+    if (value === null || value === undefined) {
+        return true;
+    }
+
+    if (typeof value === 'string') {
+        return value.trim().length === 0;
+    }
+
+    if (Array.isArray(value)) {
+        return value.length === 0;
+    }
+
+    if (typeof value === 'object') {
+        return Object.keys(value).length === 0;
+    }
+
+    return false;
+}
+
+const tools = { buildTree, flattenTree, isEmpty };
 export default tools;

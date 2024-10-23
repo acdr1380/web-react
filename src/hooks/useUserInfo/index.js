@@ -1,11 +1,11 @@
-import { useLocalStorage } from '@/hooks';
+import { useSelector } from 'react-redux';
 
 /**
  * 获取用户信息
  * @returns userInfo 用户信息
  */
 function useUserInfo() {
-    return useLocalStorage('userInfo', {});
+    return useSelector(state => state.global.userInfo);
 }
 
 export default useUserInfo;
