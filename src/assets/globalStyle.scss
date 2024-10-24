@@ -1,5 +1,7 @@
+$gap: 10px;
+
 .ant-layout {
-    height: 100vh;
+    height: 100%;
 
     .ant-layout-content {
         background: #fff;
@@ -7,4 +9,22 @@
 
         overflow: auto;
     }
+}
+
+// 定义全局滚动条样式
+*::-webkit-scrollbar {
+    width: 5px; // 滚动条的宽度
+}
+
+*::-webkit-scrollbar-track {
+    background: #f1f1f1; // 滚动条轨道的背景颜色
+}
+
+*::-webkit-scrollbar-thumb {
+    background: #888; // 滚动条滑块的背景颜色
+    border-radius: 5px; // 滚动条滑块的圆角
+}
+
+*::-webkit-scrollbar-thumb:hover {
+    background: #555; // 滚动条滑块悬停时的背景颜色
 }

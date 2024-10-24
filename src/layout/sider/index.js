@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { Layout, Menu } from 'antd';
 import { useSelector } from 'react-redux';
 import tools from '@/utils/tools';
+import { useNavigate } from 'react-router-dom';
 
 const key = 'id';
 const parentKey = 'parentid';
@@ -12,6 +13,7 @@ const parentKey = 'parentid';
 export default function Sider() {
     // 菜单列表
     const menuList = useSelector(state => state.global.menus);
+    const navigate = useNavigate();
 
     const items = useMemo(() => {
         const l = menuList.map(item => ({
@@ -25,14 +27,13 @@ export default function Sider() {
         return tools.buildTree(l, key, parentKey);
     }, [menuList]);
 
-    const handleMenus = e => {
-        console.log(e);
+    const handleMenus = ({ key }) => {
+        navigate(key);
     };
 
     return (
         <Layout.Sider trigger={null} collapsible collapsed={false}>
-            <div className="demo-logo-vertical" />
-            <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']} items={items} onClick={handleMenus} />
+            <Menu theme="dark" mode="inline" defaultSelectedKeys={['home']} items={items} onClick={handleMenus} />
         </Layout.Sider>
     );
 }

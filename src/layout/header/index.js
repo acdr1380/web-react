@@ -6,10 +6,8 @@ import { MenuUnfoldOutlined, MenuFoldOutlined } from '@ant-design/icons';
  * 顶部导航
  */
 export default function Header(props) {
-    const { themToken = {} } = props;
-
     return (
-        <Layout.Header style={{ padding: 0, background: themToken.colorBgContainer }}>
+        <Layout.Header style={{ padding: 0 }}>
             <Button
                 type="text"
                 icon={false ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}

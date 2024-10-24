@@ -15,10 +15,7 @@ const global = createSlice({
          * @param {any} action 携带的数据
          */
         setMenus(state, action) {
-            return new Promise(resolve => {
-                state.menus = action.payload;
-                resolve(state);
-            });
+            state.menus = action.payload;
         },
 
         /**

@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { ConfigProvider } from 'antd';
+import zhCN from 'antd/locale/zh_CN';
 import { BrowserRouter } from 'react-router-dom';
 
 import Routers from '@/routers';
@@ -12,11 +13,20 @@ import '@/assets/globalStyle.scss';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
 // antd 配置主题
-const theme = { token: { colorPrimary: '#00b96b' } };
+const theme = {
+    token: {},
+    components: {
+        Layout: {
+            headerBg: '#fff',
+            headerPadding: 0,
+            headerHeight: '60px',
+        },
+    },
+};
 
 // 渲染
 root.render(
-    <ConfigProvider theme={theme}>
+    <ConfigProvider theme={theme} locale={zhCN}>
         <Provider store={globalStore}>
             <BrowserRouter>
                 <Routers />
