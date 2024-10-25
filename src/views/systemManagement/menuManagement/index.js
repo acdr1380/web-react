@@ -7,5 +7,5 @@ import { EditTable } from '@/components';
 export default function Index() {
     const [dataSource, setDataSource] = useState([]);
 
-    return <EditTable dataSource={dataSource} editTools={['add']} />;
+    return <EditTable editable dataSource={dataSource} editTools={['add']} />;
 }

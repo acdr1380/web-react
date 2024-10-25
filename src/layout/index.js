@@ -47,7 +47,7 @@ function Index() {
             <Sider />
             <Layout>
                 <Header />
-                <Content style={{ margin: 12, padding: '0 12px' }}>
+                <Content style={{ margin: 12, padding: 10 }}>
                     <Outlet />
                 </Content>
             </Layout>

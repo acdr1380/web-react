@@ -106,6 +106,59 @@ const tools = {
         });
         return uuid;
     },
+
+    /**
+     * 深拷贝
+     */
+    deepClone: (value, hash = new WeakMap()) => {
+        // 处理基本类型，null 和 undefined
+        if (value === null || typeof value !== 'object') {
+            return value;
+        }
+
+        // 处理循环引用，使用 WeakMap 存储已经克隆的对象
+        if (hash.has(value)) {
+            return hash.get(value);
+        }
+
+        // 处理 Date 对象
+        if (value instanceof Date) {
+            return new Date(value);
+        }
+
+        // 处理正则表达式对象
+        if (value instanceof RegExp) {
+            return new RegExp(value);
+        }
+
+        // 处理函数对象，直接返回函数（注意：函数是不可深拷贝的）
+        if (typeof value === 'function') {
+            return value;
+        }
+
+        // 处理数组
+        if (Array.isArray(value)) {
+            const result = [];
+            hash.set(value, result); // 保存引用以避免循环
+            value.forEach((item, index) => {
+                result[index] = tools.deepClone(item, hash); // 递归拷贝每一个元素
+            });
+            return result;
+        }
+
+        // 处理对象
+        if (value instanceof Object) {
+            const result = {};
+            hash.set(value, result); // 保存引用以避免循环
+            Object.keys(value).forEach(key => {
+                result[key] = tools.deepClone(value[key], hash); // 递归拷贝每一个属性
+            });
+            return result;
+        }
+
+        // 如果是其他不可识别类型，直接返回
+        return value;
+    },
 };
 
 export default tools;

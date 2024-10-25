@@ -3,6 +3,7 @@ import { Layout, Table, Button, message } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 
 import style from './style.module.scss';
+import tools from '@/utils/tools';
 
 const { Header, Content } = Layout;
 
@@ -16,7 +17,7 @@ const { Header, Content } = Layout;
  * @returns
  */
 function EditTable(props) {
-    const { editable = true, editTools = [], dataSource } = props;
+    const { rowKey = '_id', editable = false, editTools = [], dataSource, pagination = false } = props;
 
     // 表格数据
     const [_dataSource, set_DataSource] = useState(dataSource);
@@ -28,72 +29,120 @@ function EditTable(props) {
     const editStatus = useMemo(() => !!editType, [editType]);
 
     /**
-     * 编辑前，一般在用作校验
-     */
-    const onEditBefore = () => {
-        if (!_dataSource || _dataSource.length === 0) {
-            message.warning('没有编辑数据');
-            return false;
-        }
-
-        if (props.onEditBefore && typeof props.onEditBefore === 'function') {
-            return props.onEditBefore();
-        }
-
-        return true;
-    };
-
-    /**
-     * 编辑
-     */
-    const onEdit = () => {
-        if (!onEditBefore()) {
-            return;
-        }
-
-        if (props.onEdit && typeof props.onEdit === 'function') {
-            props.onEdit();
-        }
-
-        setEditType('edit');
-        setCacheData(_dataSource);
-    };
-
-    /**
-     * 放弃编辑
-     */
-    const onCancel = () => {
-        setEditType();
-        setCacheData([]);
-    };
-
-    /**
-     * 编辑保存
-     */
-    const onEditSave = () => {
-        if (props.onEditSave && typeof props.onEditSave === 'function') {
-            props.onEditSave(_dataSource, editType);
-        }
-
-        setEditType();
-        setCacheData([]);
-    };
-
-    /**
      * 表格编辑栏
      */
     const _editTools = useMemo(() => {
         // 是否允许编辑
         if (!editable) return <></>;
 
+        // 编辑工具
+        if (!editTools || editTools.length === 0) return <></>;
+
+        /**
+         * 新增前校验
+         */
+        const onAddBefore = () => {
+            if (props.onAddBefore && typeof props.onAddBefore === 'function') {
+                return props.onAddBefore();
+            }
+
+            return true;
+        };
+
+        /**
+         * 新增
+         */
+        const onAdd = () => {
+            if (!onAddBefore()) {
+                return;
+            }
+
+            // 默认模板
+            let template = {
+                [rowKey]: tools.getGuid(),
+            };
+
+            // 使用自定义模板
+            if (props.rowTemplate && typeof props.rowTemplate === 'function') {
+                template = props.rowTemplate();
+            }
+            setEditType('add');
+            setCacheData(tools.deepClone(_dataSource));
+            set_DataSource([..._dataSource, template]);
+        };
+
+        /**
+         * 编辑前，一般在用作校验
+         */
+        const onEditBefore = () => {
+            if (!_dataSource || _dataSource.length === 0) {
+                message.warning('没有编辑数据');
+                return false;
+            }
+
+            if (props.onEditBefore && typeof props.onEditBefore === 'function') {
+                return props.onEditBefore();
+            }
+
+            return true;
+        };
+
+        /**
+         * 编辑
+         */
+        const onEdit = () => {
+            if (!onEditBefore()) {
+                return;
+            }
+
+            if (props.onEdit && typeof props.onEdit === 'function') {
+                props.onEdit();
+            }
+
+            setEditType('edit');
+            setCacheData(tools.deepClone(_dataSource));
+        };
+
+        /**
+         * 放弃编辑
+         */
+        const onCancel = () => {
+            setEditType();
+            set_DataSource(cacheData);
+            setCacheData([]);
+        };
+
+        /**
+         * 编辑保存
+         */
+        const onEditSave = () => {
+            if (props.onEditSave && typeof props.onEditSave === 'function') {
+                props.onEditSave(_dataSource, editType);
+            }
+
+            setEditType();
+            setCacheData([]);
+        };
+
         // 编辑按钮
         const buttons = [];
         if (editStatus) {
+            buttons.push(
+                <Button key="save" color="primary" onClick={onEditSave}>
+                    保存
+                </Button>
+            );
+            buttons.push(
+                <Button key="cancel" onClick={onCancel}>
+                    放弃编辑
+                </Button>
+            );
+        } else {
             for (const t of editTools) {
                 switch (t) {
                     case 'add':
                         buttons.push(
-                            <Button key={t} icon={<PlusOutlined />} color="primary">
+                            <Button key={t} icon={<PlusOutlined />} color="primary" onClick={onAdd}>
                                 添加
                             </Button>
                         );
@@ -116,27 +165,16 @@ function EditTable(props) {
                         break;
                 }
             }
-        } else {
-            buttons.push(
-                <Button key="save" color="primary" onClick={onEditSave}>
-                    保存
-                </Button>
-            );
-            buttons.push(
-                <Button key="cancel" onClick={onCancel}>
-                    放弃编辑
-                </Button>
-            );
         }
 
         return <Header className={style['edit-tools']}>{buttons}</Header>;
-    }, [editable, editStatus, editTools]);
+    }, [editable, editTools, editStatus, props, rowKey, _dataSource, cacheData, editType]);
 
     return (
         <Layout className={style.EditTable}>
             {_editTools}
             <Content>
-                <Table bordered {...props} dataSource={_dataSource} />
+                <Table bordered rowKey={rowKey} pagination={pagination} {...props} dataSource={_dataSource} />
             </Content>
         </Layout>
     );
