@@ -16,7 +16,7 @@ const { Content } = Layout;
 function Index() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const userInfo = useUserInfo();
+    const [userInfo] = useUserInfo();
     const [loading, setLoading] = useState(false);
 
     // 当用户信息存在时，请求系统菜单数据并更新全局菜单列表
@@ -35,6 +35,8 @@ function Index() {
                     }
                 })
                 .catch(() => setLoading(false));
+        } else {
+            navigate('/login');
         }
     }, []);
 

@@ -2,32 +2,29 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Form, Input, Button, Flex } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
-import { useDispatch } from 'react-redux';
-import { useLocalStorage } from '@/hooks';
+import { useToken, useUserInfo } from '@/hooks';
 
 import request from '@/utils/request';
 import style from './style.module.scss';
 
 export default function Login() {
     const [loading, setLoading] = React.useState(false);
-    const [, setToken] = useLocalStorage(
-        process.env.REACT_APP_TOKEN_KEY,
-        null,
-        process.env.REACT_APP_TOKEN_EXPIRES * 1000
-    );
+    const [token, setToken] = useToken();
+    const [userInfo, setUserInfo] = useUserInfo();
     const navigate = useNavigate();
-    const dispatch = useDispatch();
 
     React.useEffect(() => {
-        localStorage.removeItem(process.env.REACT_APP_TOKEN_KEY);
-    }, []);
+        if (token && userInfo) {
+            navigate('/app');
+        }
+    }, [token, userInfo, navigate]);
 
     const onFinish = values => {
         setLoading(true);
         request.post('system/user/login', values, { verifyToken: false }).then(({ success, data }) => {
             if (success) {
                 setToken(data.Token);
-                dispatch({ type: 'global/setUserInfo', payload: { UserId: data.UserId, UserName: data.UserName } });
+                setUserInfo({ UserId: data.UserId, UserName: data.UserName });
                 navigate('/app');
             }
 

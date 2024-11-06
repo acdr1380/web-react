@@ -1,4 +1,4 @@
-import useLocalStorage from './useLocalStorage';
 import useUserInfo from './useUserInfo';
+import useToken from './useToken';
 
-export { useLocalStorage, useUserInfo };
+export { useUserInfo, useToken };

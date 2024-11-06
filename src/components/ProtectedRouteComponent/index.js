@@ -1,10 +1,10 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 import { message } from 'antd';
-import { useLocalStorage } from '@/hooks';
+import { useToken } from '@/hooks';
 
 const ProtectedRoute = ({ children }) => {
-    const [token] = useLocalStorage(process.env.REACT_APP_TOKEN_KEY);
+    const [token] = useToken();
 
     /**
      * 这里可以添加自己的身份验证逻辑
