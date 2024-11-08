@@ -1,38 +1,21 @@
-import { configureStore, createSlice } from '@reduxjs/toolkit';
+import { makeAutoObservable } from 'mobx';
 
-const global = createSlice({
-    name: 'global',
-    initialState: {
-        // 菜单列表
-        menus: [],
-        // 用户信息
-        userInfo: {},
-    },
-    reducers: {
-        /**
-         * 设置菜单
-         * @param {any} state 当前状态
-         * @param {any} action 携带的数据
-         */
-        setMenus(state, action) {
-            state.menus = action.payload;
-        },
+class Global {
+    // 全局菜单
+    menus = [];
 
-        /**
-         * 设置用户信息
-         * @param {any} state 当前状态
-         * @param {any} action 携带的数据
-         */
-        setUserInfo(state, action) {
-            state.userInfo = action.payload;
-        },
-    },
-});
+    constructor() {
+        makeAutoObservable(this);
+    }
 
-export const { setMenus } = global.actions;
+    /**
+     * 设置菜单
+     */
+    setMenus(menus) {
+        this.menus = menus;
+    }
+}
 
-export default configureStore({
-    reducer: {
-        global: global.reducer,
-    },
-});
+const global = new Global();
+
+export default global;

@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { observer } from 'mobx-react';
 import { Layout } from 'antd';
 
 import { useUserInfo } from '@/hooks';
 import tools from '@/utils/tools';
 import request from '@/utils/request';
+import global from '@/utils/globalStore';
 import LoadingComponent from '@/components/LoadingComponent';
 
 import Header from './header';
@@ -13,9 +14,8 @@ import Sider from './sider';
 
 const { Content } = Layout;
 
-function Index() {
+export default observer(function () {
     const navigate = useNavigate();
-    const dispatch = useDispatch();
     const [userInfo] = useUserInfo();
     const [loading, setLoading] = useState(false);
 
@@ -29,8 +29,7 @@ function Index() {
                     setLoading(false);
                     if (success) {
                         // 更新全局菜单列表
-                        dispatch({ type: 'global/setMenus', payload: data });
-
+                        global.setMenus(data);
                         navigate('home');
                     }
                 })
@@ -55,5 +54,4 @@ function Index() {
             </Layout>
         </Layout>
     );
-}
-export default Index;
+});

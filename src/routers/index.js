@@ -1,8 +1,9 @@
 import React, { useMemo } from 'react';
 import { useRoutes } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { observer } from 'mobx-react';
 
 import baseRouter from './baseRouters';
+import global from '@/utils/globalStore';
 
 // 批量导入页面
 const modules = require.context('@/views', true, /\.js$/);
@@ -11,8 +12,8 @@ const modules = require.context('@/views', true, /\.js$/);
  *  获取路由
  * @returns 路由
  */
-function GetRoutes() {
-    const { menus: menuList } = useSelector(state => state.global);
+export default observer(function () {
+    const menuList = global.menus;
 
     // 根据菜单列表动态生成路由配置
     const _baseRouter = useMemo(() => {
@@ -36,6 +37,4 @@ function GetRoutes() {
     const element = useRoutes(_baseRouter);
 
     return <>{element}</>;
-}
-
-export default GetRoutes;
+});

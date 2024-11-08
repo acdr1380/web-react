@@ -1,8 +1,11 @@
 import React, { useMemo } from 'react';
 import { Layout, Menu } from 'antd';
-import { useSelector } from 'react-redux';
-import tools from '@/utils/tools';
+import { observer } from 'mobx-react';
 import { useNavigate } from 'react-router-dom';
+
+import tools from '@/utils/tools';
+import global from '@/utils/globalStore';
+import store from '../store';
 
 const key = 'id';
 const parentKey = 'parentid';
@@ -10,9 +13,10 @@ const parentKey = 'parentid';
 /**
  * 菜单列表
  */
-export default function Sider() {
+export default observer(function (props) {
     // 菜单列表
-    const menuList = useSelector(state => state.global.menus);
+    const menuList = global.menus;
+
     const navigate = useNavigate();
 
     const items = useMemo(() => {
@@ -32,8 +36,8 @@ export default function Sider() {
     };
 
     return (
-        <Layout.Sider trigger={null} collapsible collapsed={false}>
+        <Layout.Sider trigger={null} collapsible collapsed={store.collapsed}>
             <Menu theme="dark" mode="inline" defaultSelectedKeys={['home']} items={items} onClick={handleMenus} />
         </Layout.Sider>
     );
-}
+});
