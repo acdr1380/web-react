@@ -1,5 +1,5 @@
 import { Navigate } from 'react-router-dom';
-import { ProtectedRouteComponent, LoginComponent } from '@/components';
+import { ProtectedRouteComponent, LoginComponent, LoadingComponent } from '@/components';
 import Layout from '@/layout/index';
 
 // 基础路由

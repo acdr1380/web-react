@@ -1,5 +1,6 @@
 // request.js
 import { message } from 'antd';
+import { useNavigate } from 'react-router-dom';
 
 const baseUrl = process.env.REACT_APP_BASE_URL || '/api';
 
@@ -33,18 +34,18 @@ const request = async (endpoint, options = {}, config = {}) => {
             // 如果设置了过期时间，并且当前时间已经超过了过期时间
             if (parsedData.expireTime && now > parsedData.expireTime) {
                 localStorage.removeItem(process.env.REACT_APP_TOKEN_KEY);
-                window.location.href = '/login';
+                window.location.replace('/login');
                 throw new Error('Token 已过期，请重新登录');
             }
 
-            // 更新过期时间
-            const newExpireTime = now + process.env.REACT_APP_TOKEN_EXPIRES * 1000;
-            const updatedData = {
-                value: parsedData.value,
-                expireTime: newExpireTime,
-            };
+            // // 更新过期时间
+            // const newExpireTime = now + process.env.REACT_APP_TOKEN_EXPIRES * 1000;
+            // const updatedData = {
+            //     value: parsedData.value,
+            //     expireTime: newExpireTime,
+            // };
 
-            localStorage.setItem(process.env.REACT_APP_TOKEN_KEY, JSON.stringify(updatedData));
+            // localStorage.setItem(process.env.REACT_APP_TOKEN_KEY, JSON.stringify(updatedData));
 
             // 添加验证
             _options.headers.Authorization = parsedData.value;

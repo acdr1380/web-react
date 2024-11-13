@@ -48,7 +48,7 @@ export default observer(function () {
             <Sider />
             <Layout>
                 <Header />
-                <Content style={{ margin: 12, padding: 10 }}>
+                <Content style={{ margin: 12, padding: 10, position: 'relative' }} id="layout-content">
                     <Outlet />
                 </Content>
             </Layout>

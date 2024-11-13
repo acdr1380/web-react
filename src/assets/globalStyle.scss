@@ -5,9 +5,19 @@ $gap: 10px;
 
     .ant-layout-content {
         background: #fff;
-        border-radius: 6px;
 
         overflow: auto;
+    }
+}
+
+.ant-drawer {
+    position: absolute;
+    .ant-drawer-footer {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        gap: $gap;
     }
 }
 

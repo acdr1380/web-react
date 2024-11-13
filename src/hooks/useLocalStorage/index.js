@@ -30,16 +30,16 @@ function useLocalStorage(key, defaultValue = '', expireTime = null) {
                 return defaultValue;
             }
 
-            // 如果存在过期时间且没过期，刷新过期时间
-            if (expireTime) {
-                // 更新过期时间
-                const newExpireTime = now + expireTime;
-                const updatedData = {
-                    value: parsedData.value,
-                    expireTime: newExpireTime,
-                };
-                localStorage.setItem(key, JSON.stringify(updatedData));
-            }
+            // // 如果存在过期时间且没过期，刷新过期时间
+            // if (expireTime) {
+            //     // 更新过期时间
+            //     const newExpireTime = now + expireTime;
+            //     const updatedData = {
+            //         value: parsedData.value,
+            //         expireTime: newExpireTime,
+            //     };
+            //     localStorage.setItem(key, JSON.stringify(updatedData));
+            // }
 
             // 返回存储的实际值
             return parsedData.value;
