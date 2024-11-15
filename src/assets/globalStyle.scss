@@ -3,6 +3,12 @@ $gap: 10px;
 .ant-layout {
     height: 100%;
 
+    .ant-layout-header {
+        display: flex;
+        gap: $gap;
+        align-items: center;
+    }
+
     .ant-layout-content {
         background: #fff;
 
@@ -15,7 +21,7 @@ $gap: 10px;
     .ant-drawer-footer {
         display: flex;
         flex-direction: row;
-        justify-content: center;
+        justify-content: space-between;
         align-items: center;
         gap: $gap;
     }

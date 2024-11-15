@@ -1,5 +1,6 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Drawer, Button, Form, Input, TreeSelect } from 'antd';
+
 import tools from '@/utils/tools';
 
 /**
@@ -8,39 +9,32 @@ import tools from '@/utils/tools';
  * @returns
  */
 export default function AddDrawer(props) {
-    const { onAdd, parentNode = [] } = props;
+    const { onSave, open = false, onClose, parentNode = [], selectedRow } = props;
 
     const [form] = Form.useForm();
-    const [open, setOpen] = useState(false);
 
-    /**
-     * 添加
-     */
-    function onOpen() {
-        form.resetFields();
-        setOpen(true);
-    }
+    const [loading, setLoading] = useState(false);
 
-    /**
-     * 关闭
-     */
-    function onClose() {
-        setOpen(false);
-    }
+    useEffect(() => {
+        if (open && selectedRow) {
+            form.setFieldsValue(selectedRow);
+        }
+    }, [open, selectedRow, form]);
 
     /**
      * 确定
      */
-    function onFinish() {
-        form.validateFields()
-            .then(values => {
-                console.log('values', values);
+    async function onFinish() {
+        try {
+            const values = await form.validateFields();
 
-                if (onAdd && typeof onAdd === 'function') {
-                    onAdd();
-                }
-            })
-            .catch(err => console.log('err', err));
+            if (onSave && typeof onSave === 'function') {
+                setLoading(true);
+                onSave(values, () => setLoading(false));
+            }
+        } catch (errorInfo) {
+            console.error('Failed:', errorInfo);
+        }
     }
 
     const treeData = useMemo(() => {
@@ -48,37 +42,35 @@ export default function AddDrawer(props) {
     }, [parentNode]);
 
     return (
-        <>
-            <Button type="primary" onClick={onOpen}>
-                添加
-            </Button>
-            <Drawer
-                title="添加"
-                onClose={onClose}
-                open={open}
-                size="small"
-                footer={
-                    <>
-                        <Button type="primary" onClick={onFinish}>
-                            添加
-                        </Button>
-                        <Button onClick={onClose}>取消</Button>
-                    </>
-                }
-                getContainer={() => document.getElementById('layout-content')}
-            >
-                <Form name="add" form={form} layout="horizontal" autoComplete="off">
-                    <Form.Item label="标题" name="Name" rules={[{ required: true }]}>
-                        <Input placeholder="请输入标题" />
-                    </Form.Item>
-                    <Form.Item label="地址" name="Path" rules={[{ required: true }]}>
-                        <Input placeholder="请输入地址" />
-                    </Form.Item>
-                    <Form.Item label="父级" name="ParentId">
-                        <TreeSelect showSearch treeDefaultExpandAll treeData={treeData} placeholder="请选择" />
-                    </Form.Item>
-                </Form>
-            </Drawer>
-        </>
+        <Drawer
+            title="添加"
+            onClose={onClose}
+            open={open}
+            size="small"
+            loading={loading}
+            footer={
+                <>
+                    <Button type="primary" onClick={onFinish}>
+                        保存
+                    </Button>
+                    <Button onClick={onClose}>取消</Button>
+                </>
+            }
+        >
+            <Form name="add" form={form} layout="vertical" autoComplete="off">
+                <Form.Item label="标题" name="Title" rules={[{ required: true }]} hasFeedback>
+                    <Input placeholder="请输入标题" />
+                </Form.Item>
+                <Form.Item label="标题编码" name="Code" rules={[{ required: true }]} hasFeedback>
+                    <Input placeholder="请输入编码" />
+                </Form.Item>
+                <Form.Item label="地址" name="Url" rules={[{ required: true }]} hasFeedback>
+                    <Input placeholder="请输入地址" />
+                </Form.Item>
+                <Form.Item label="父级" name="ParentId">
+                    <TreeSelect allowClear treeDefaultExpandAll treeData={treeData} placeholder="请选择" />
+                </Form.Item>
+            </Form>
+        </Drawer>
     );
 }
