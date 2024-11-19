@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Layout, Table, Spin, Button, Flex } from 'antd';
-import { EditFilled, DeleteFilled } from '@ant-design/icons';
+import { Layout, Table, Spin, Button, message, Modal } from 'antd';
 import request from '@/utils/request';
 import tools from '@/utils/tools';
 
 import AddDrawer from './addDrawer';
-import { render } from 'react-dom';
+import { set } from 'mobx';
 
 /**
  * 菜单管理
@@ -15,6 +14,7 @@ export default function Index() {
     const [dataSource, setDataSource] = useState([]);
     const [selectedRow, setSelectedRow] = useState();
     const [open, setOpen] = useState(false);
+    const [type, setType] = useState(false);
 
     useEffect(() => {
         setLoading(true);
@@ -40,38 +40,77 @@ export default function Index() {
             title: '创建时间',
             dataIndex: 'CreatedTime',
         },
-        {
-            title: '编辑',
-            dataIndex: 'edit',
-            render: (text, record) => {
-                return (
-                    <Flex justify="flex-start" gap={10}>
-                        <Button type="primary" onClick={() => handleEdit(record)} icon={<EditFilled />} />
-                        <Button type="primary" onClick={() => handleEdit(record)} icon={<DeleteFilled />} />
-                    </Flex>
-                );
-            },
-        },
     ];
 
     /**
      * 保存
      */
     function onSave(values, callback) {
-        request.post('/system/menu', values).then(({ success, data }) => {
-            if (success) {
-                setDataSource([...dataSource, data]);
+        if (type === 'add') {
+            request.post('/system/menu', values).then(({ success, data }) => {
+                if (success) {
+                    setDataSource([...dataSource, data]);
+                    setOpen(false);
+                }
                 callback();
-            }
-        });
+            });
+        } else {
+            request.put('/system/menu', { ...selectedRow, ...values }).then(({ success, data }) => {
+                if (success) {
+                    setDataSource(dataSource.map(item => (item.Id === data.Id ? data : item)));
+                    setOpen(false);
+                    setSelectedRow(data);
+                }
+                callback();
+            });
+        }
+    }
+
+    /**
+     * 新增
+     */
+    function handleAdd() {
+        setOpen(true);
+        setType('add');
     }
 
     /**
      * 编辑
      */
-    function handleEdit(row) {
-        setSelectedRow(row);
+    function handleEdit() {
+        if (tools.isEmpty(selectedRow)) {
+            message.warning('请选择要编辑的数据');
+            return;
+        }
+
+        setSelectedRow(selectedRow);
+        setType('edit');
         setOpen(true);
+    }
+
+    /**
+     * 删除
+     */
+    function handleDelete() {
+        if (tools.isEmpty(selectedRow)) {
+            message.warning('请选择要删除的数据');
+            return;
+        }
+
+        Modal.confirm({
+            title: '删除菜单',
+            content: '确定删除该菜单吗？',
+            onOk() {
+                setLoading(true);
+                request.del('/system/menu/' + selectedRow.Id).then(({ success }) => {
+                    if (success) {
+                        setDataSource(dataSource.filter(item => item.Id !== selectedRow.Id));
+                        setSelectedRow();
+                    }
+                    setLoading(false);
+                });
+            },
+        });
     }
 
     const treeData = useMemo(() => tools.buildTree(dataSource), [dataSource]);
@@ -80,18 +119,41 @@ export default function Index() {
         <Spin spinning={loading}>
             <Layout>
                 <Layout.Header>
-                    <Button type="primary" onClick={() => setOpen(true)}>
+                    <Button type="primary" onClick={handleAdd}>
                         新增
                     </Button>
-                    <Button type="primary" onClick={() => setOpen(true)}>
-                        修改
+                    <Button onClick={handleEdit}>编辑</Button>
+                    <Button color="danger" variant="solid" onClick={handleDelete}>
+                        删除
                     </Button>
                 </Layout.Header>
                 <Layout.Content>
-                    <Table rowKey="Id" bordered pagination={false} columns={columns} dataSource={treeData} />
+                    <Table
+                        rowKey="Id"
+                        bordered
+                        pagination={false}
+                        columns={columns}
+                        dataSource={treeData}
+                        onRow={row => {
+                            return {
+                                onClick: () => setSelectedRow(row),
+                            };
+                        }}
+                        rowSelection={{
+                            disableRowSelect: true,
+                            selectedRowKeys: [selectedRow?.Id],
+                        }}
+                    />
                 </Layout.Content>
             </Layout>
-            <AddDrawer open={open} parentNode={dataSource} onSave={onSave} onClose={() => setOpen(false)} />
+            <AddDrawer
+                open={open}
+                type={type}
+                selectedRow={selectedRow}
+                parentNode={dataSource}
+                onSave={onSave}
+                onClose={() => setOpen(false)}
+            />
         </Spin>
     );
 }

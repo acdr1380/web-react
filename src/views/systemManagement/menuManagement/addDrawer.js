@@ -9,17 +9,17 @@ import tools from '@/utils/tools';
  * @returns
  */
 export default function AddDrawer(props) {
-    const { onSave, open = false, onClose, parentNode = [], selectedRow } = props;
+    const { onSave, type = 'add', open = false, onClose, parentNode = [], selectedRow } = props;
 
     const [form] = Form.useForm();
 
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        if (open && selectedRow) {
+        if (open && selectedRow && type === 'edit') {
             form.setFieldsValue(selectedRow);
         }
-    }, [open, selectedRow, form]);
+    }, [open, selectedRow, form, type]);
 
     /**
      * 确定
@@ -38,7 +38,9 @@ export default function AddDrawer(props) {
     }
 
     const treeData = useMemo(() => {
-        return tools.buildTree(tools.flattenTree(parentNode).map(x => ({ ...x, label: x.Title, value: x.Id })));
+        return tools.buildTree(
+            tools.flattenTree(parentNode).map(x => ({ ...x, label: x.Title, value: x.Id, disabled: x.IsLowest }))
+        );
     }, [parentNode]);
 
     return (
@@ -47,10 +49,9 @@ export default function AddDrawer(props) {
             onClose={onClose}
             open={open}
             size="small"
-            loading={loading}
             footer={
                 <>
-                    <Button type="primary" onClick={onFinish}>
+                    <Button type="primary" loading={loading} onClick={onFinish}>
                         保存
                     </Button>
                     <Button onClick={onClose}>取消</Button>

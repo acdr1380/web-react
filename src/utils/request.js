@@ -98,7 +98,19 @@ const post = async (endpoint, params = {}, config = {}) => {
     return data;
 };
 
-const uploadFile = async (endpoint, file, additionalData = {}) => {
+const put = async (endpoint, params = {}, config = {}) => {
+    // 执行PUT请求，使用baseUrl和endpoint构建完整URL
+    const data = await request(endpoint, { method: 'PUT', body: JSON.stringify(params) }, config);
+    return data;
+};
+
+const del = async (endpoint, params = {}, config = {}) => {
+    // 发起DELETE请求
+    const data = await request(endpoint, { method: 'DELETE', body: JSON.stringify(params) }, config);
+    return data;
+};
+
+const file = async (endpoint, file, additionalData = {}) => {
     // 创建FormData对象，用于保存要上传的文件和其他数据
     const formData = new FormData();
     // 将文件添加到FormData对象中
@@ -119,6 +131,6 @@ const uploadFile = async (endpoint, file, additionalData = {}) => {
 
     return data;
 };
-const _request = { get, post, uploadFile };
+const _request = { get, post, put, del, file };
 
 export default _request;
